@@ -8,23 +8,35 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:recetasapp/main.dart';
+import 'package:recetas_del_mayab/models/receta.dart';
+import 'package:recetas_del_mayab/screens/detalle_receta_screen.dart';
 
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
-    await tester.pumpWidget(const MyApp());
+  testWidgets('muestra la información principal de la receta', (tester) async {
+    final receta = Receta(
+      id: 1,
+      nombre: 'Pozole rojo',
+      ingredientes: ['Maíz', 'Chile', 'Pollo'],
+      instrucciones: ['Hervir el maíz', 'Preparar la salsa', 'Servir caliente'],
+      tiempoPreparacion: 20,
+      tiempoCoccion: 30,
+      porciones: 4,
+      calorias: 320,
+      imagenUrl: 'https://example.com/pozole.jpg',
+      calificacion: 4.8,
+      cocina: 'Mexicana',
+      dificultad: 'Media',
+    );
 
-    // Verify that our counter starts at 0.
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
+    await tester.pumpWidget(
+      MaterialApp(
+        home: DetalleRecetaScreen(receta: receta),
+      ),
+    );
 
-    // Tap the '+' icon and trigger a frame.
-    await tester.tap(find.byIcon(Icons.add));
-    await tester.pump();
-
-    // Verify that our counter has incremented.
-    expect(find.text('0'), findsNothing);
-    expect(find.text('1'), findsOneWidget);
+    expect(find.text('Pozole rojo'), findsOneWidget);
+    expect(find.text('Ingredientes:'), findsOneWidget);
+    expect(find.text('Maíz'), findsOneWidget);
+    expect(find.text('Preparación:'), findsOneWidget);
   });
 }
