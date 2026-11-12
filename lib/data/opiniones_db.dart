@@ -10,6 +10,7 @@ class OpinionesDb {
 	static final OpinionesDb instancia = OpinionesDb._();
 	static const _nombreArchivo = 'misopiniones.db';
 	static const _tabla = 'opiniones';
+	static const _version = 2;
 	Database? _db;
 
 	// devuelve la bd abierta (la abre solo la primera vez). PDb: Singleton
@@ -22,15 +23,21 @@ class OpinionesDb {
 		final ruta = join(await getDatabasesPath(), _nombreArchivo);
 		return openDatabase(
 			ruta,
-			version: 1,
+			version: _version,
 			onCreate: (db, version) async {
 				await db.execute('''
 				CREATE TABLE $_tabla (
 					id INTEGER PRIMARY KEY AUTOINCREMENT,
 					opinion TEXT NOT NULL,
-					autor TEXT NOT NULL
+					autor TEXT NOT NULL,
+					receta_id INTEGER
 				)
 				''');
+			},
+			onUpgrade: (db, oldVersion, newVersion) async {
+				if (oldVersion < 2) {
+					await db.execute('ALTER TABLE $_tabla ADD COLUMN receta_id INTEGER');
+				}
 			},
 		);
 	}
@@ -45,6 +52,17 @@ class OpinionesDb {
 	Future<List<Opinion>> obtenerTodas() async {
 		final db = await _database;
 		final filas = await db.query(_tabla, orderBy: 'id DESC');
+		return filas.map(Opinion.fromMap).toList();
+	}
+
+	Future<List<Opinion>> obtenerPorReceta(int recetaId) async {
+		final db = await _database;
+		final filas = await db.query(
+			_tabla,
+			where: 'receta_id = ?',
+			whereArgs: [recetaId],
+			orderBy: 'id DESC',
+		);
 		return filas.map(Opinion.fromMap).toList();
 	}
 

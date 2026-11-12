@@ -8,10 +8,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import 'package:recetas_del_mayab/data/database_initializer.dart';
+import 'package:recetas_del_mayab/data/opiniones_db.dart';
 import 'package:recetas_del_mayab/models/receta.dart';
 import 'package:recetas_del_mayab/screens/detalle_receta_screen.dart';
 
 void main() {
+  test('inicializa la base SQLite local', () async {
+    await initializeDatabase();
+    final opiniones = await OpinionesDb.instancia.obtenerPorReceta(-1);
+
+    expect(opiniones, isEmpty);
+  });
+
   testWidgets('muestra la información principal de la receta', (tester) async {
     final receta = Receta(
       id: 1,
@@ -36,7 +45,9 @@ void main() {
 
     expect(find.text('Pozole rojo'), findsOneWidget);
     expect(find.text('Ingredientes:'), findsOneWidget);
-    expect(find.text('Maíz'), findsOneWidget);
+    expect(find.text('1. Maíz'), findsOneWidget);
     expect(find.text('Preparación:'), findsOneWidget);
+    expect(find.text('Reseñas'), findsOneWidget);
+    expect(find.text('Escribir'), findsOneWidget);
   });
 }

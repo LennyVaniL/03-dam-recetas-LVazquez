@@ -4,8 +4,9 @@ import 'package:recetas_del_mayab/models/opinion.dart';
 
 class FormularioScreen extends StatefulWidget {
 	final Opinion? opinion; // null = nueva, con valor = editar
+	final int? recetaId;
 
-	const FormularioScreen({super.key, this.opinion});
+	const FormularioScreen({super.key, this.opinion, this.recetaId});
 
 	@override
 	State<FormularioScreen> createState() => _FormularioScreenState();
@@ -36,6 +37,7 @@ class _FormularioScreenState extends State<FormularioScreen> {
 		if (!_formKey.currentState!.validate()) return;
 		final opinion = Opinion(
 			id: widget.opinion?.id,
+		recetaId: widget.opinion?.recetaId ?? widget.recetaId,
 			opinion: _opinionCtrl.text.trim(),
 			autor: _autorCtrl.text.trim(),
 		);
@@ -94,4 +96,5 @@ class _FormularioScreenState extends State<FormularioScreen> {
 			),
 		);
 	}
+
 }

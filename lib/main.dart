@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'data/database_initializer.dart';
 import 'package:recetas_del_mayab/screens/splash_screen.dart';
 
-void main(){
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await initializeDatabase();
   runApp(const RecetasApp());
 }
 
